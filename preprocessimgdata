@@ -1,0 +1,36 @@
+function [facedata, nameList] = preprocessimgdata(fullList, InputFolderPath, start, num)
+
+% PREPROCESSINGIMGDATA preprocesses images, load them from disk and
+% convert to specific orginizaion for later processing.
+% This function will save transformed data into disk
+%
+% [facedata, nameList] = preprocessimgdata(fullList, InputFolderPath, start, num)
+%
+% Input:
+% fullList = list of file names
+% InputFolderPath = folder path of image files
+% start = start index of name list
+% num = number of sample images loaded
+%
+
+% Output:
+% facedata = organized face data M-by-N matrix. Each row corresponds to
+% one variable, and each column corresponds to one
+% observation.
+% nameList = partial cell array of images names
+
+disp('Loading images...');
+nameList = fullList(start:start+num-1);
+numImg = length(nameList);
+tempimg = imread([InputFolderPath, '\', nameList{1}]);
+if ndims(tempimg) ~= 2
+error('Must be gray image.');
+end
+[m,n] = size(tempimg);
+facedata = zeros(m*n,numImg,'uint8');
+for i = 1:numImg
+img = imread([InputFolderPath, '\', nameList{i}]);
+facedata(:,i) = img(:);
+end
+
+facedata = double(facedata); % convert to double for later computation
